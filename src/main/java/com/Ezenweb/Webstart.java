@@ -24,4 +24,9 @@ public class Webstart {
             1. 내장 : @override : 상속 메소드 재정의
             
             2. 메타 :
+                1.  @SpringBootApplication : 컴포넌트 스캔
+                    컴포넌트 스캔 빈[ 스프링 메모리 ] 등록
+                        1. @Controller
+                        2. @RestController
+
  */
