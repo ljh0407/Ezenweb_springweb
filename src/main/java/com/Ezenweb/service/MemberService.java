@@ -121,6 +121,8 @@ public class MemberService {
     }
 
     // 7. 로그아웃
-
+    public  void getlogoutMno(){
+        request.getSession().setAttribute("loginMno", null);
+    }
 }
 

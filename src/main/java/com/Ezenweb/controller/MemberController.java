@@ -74,4 +74,9 @@ public class MemberController {
         return result;
 
     }
+
+    @GetMapping("/getlogoutMno")
+    public  void getlogoutMno(){
+         memberService.getlogoutMno();
+    }
 }
