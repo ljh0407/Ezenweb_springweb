@@ -115,11 +115,12 @@ public class MemberService {
     public  int getloginMno(){
         // 1. 세션호출
         Object object = request.getSession().getAttribute("loginMno");
-        System.out.println(object);
-        System.out.println( (Integer)object);
         // 2. 세션 여부 판단
         if( object != null ){ return (Integer) object; }
         else {return 0;}
     }
+
+    // 7. 로그아웃
+
 }
 
