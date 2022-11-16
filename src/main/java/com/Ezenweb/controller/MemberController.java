@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @RestController // Restful api 사용하는 controller 명시
 @RequestMapping("/member") // 공통 URL 매핑 주소
@@ -37,23 +38,23 @@ public class MemberController {
     @GetMapping("/update")
     public Resource getupdate(){ return new ClassPathResource("templates/member/update.html");}
     // --------------------------------- 서비스/기능 매핑 ------------------------------------- //
-    @PostMapping("/setmember") // 회원가입 기능
+    @PostMapping("/setmember") // 1. 회원가입 기능
     public int setmember( @RequestBody MemberDto memberDto  ){
         int result = memberService.setmember( memberDto ); // 1. 서비스[ 비지니스 로직 ] 호출
         return result;  // 2. 반환
     }
-    @PostMapping("/getmember") // 로그인 기능
+    @PostMapping("/getmember") // 2. 로그인 기능
     public int getmember( @RequestBody MemberDto memberDto ){
         int result = memberService.getmember( memberDto );
         return result;
     }
-    @GetMapping("/getpassword")
+    @GetMapping("/getpassword") // 3. 이메일찾기
     public String getpassword( @RequestParam("memail") String memail ){
         String result = memberService.getpassword( memail );
         return result;
     }
 
-    @DeleteMapping("/setdelete") // 탈퇴
+    @DeleteMapping("/setdelete") //  4. 탈퇴
     public int setdelete( @RequestParam("mpassword") String mpassword ){
         // 1. 서비스처리
         int result = memberService.setdelete( mpassword );
@@ -61,22 +62,36 @@ public class MemberController {
         return result;
     }
 
-    @PutMapping("setupdate")
+    @PutMapping("setupdate") // 5. 비밀번호 수정
     public int setupdate( @RequestParam("mpassword") String mpassword){
         int result = memberService.setupdate(mpassword);
         return result;
 
     }
 
-    @GetMapping("/getloginMno")
+    @GetMapping("/getloginMno")  // 6. 
     public  int getloginMno(){
         int result = memberService.getloginMno();
         return result;
 
     }
 
-    @GetMapping("/getlogoutMno")
-    public  void getlogoutMno(){
-         memberService.getlogoutMno();
+    @GetMapping("/logout") // 7. 로그아웃
+    public  void logout(){
+         memberService.logout();
+    }
+
+    @GetMapping("/list") // 8. 회원목록
+    @ResponseBody
+    public List<MemberDto> list(){
+        List<MemberDto> list = memberService.list();
+        System.out.println("확인 : "+list);
+        return list;
+    }
+
+    @GetMapping("/getauth")
+    public  String getauth(@RequestParam("toemail") String toemail){
+     //  return  memberService.getauth( "dlwhdgns47@naver.com" );
+    return  "123456";
     }
 }
