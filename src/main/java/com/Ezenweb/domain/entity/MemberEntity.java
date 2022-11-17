@@ -25,7 +25,7 @@ public class MemberEntity {
     // 2. 생성자 [ 롬복으로 사용 ]
     // 3. 메소드 [ 롬복으로 사용 ]
     // * 엔티티 --> Dto
-    public MemberDto toDto() {
+    public MemberDto toDto() { //형변환
         return  MemberDto
                 .builder()  // 빌더 메소드 시작
                 .mno(this.mno)

@@ -2,57 +2,74 @@ package com.Ezenweb.controller;
 
 import com.Ezenweb.domain.Dto.BoardDto;
 import com.Ezenweb.service.Boardservice;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
-@RestController // 해당 클래스가 컨트롤 목적으로 사용 // 스프링 MVC 관리 지향
-@RequestMapping("/board")
+@RestController // @Controller + @ResponseBody
+@RequestMapping("/board") // 공통 URL
 public class BoardController {
+    // 컨트롤 역할 : 요청 / 응답
     
-    // 1. 게시물 목록 페이지 열기 [ HTML ] 열기
-    @GetMapping("/list")     // URL 정의
-    public Resource list(){
-        return new ClassPathResource("templates/board/list.html");
-    }
-    // 2. 게시물 쓰기 페이지 열기
-    @GetMapping("/write")
-    public  Resource write(){
-        return  new ClassPathResource("templates/board/write.html");
-    }
-// ------------------------------------------------------------
-    // ----------------기능처리--------------
-    // 1. 게시물 쓰기 처리 [ 첨부파일 ]
-    @PostMapping("/setboard")
-    public boolean setboard(@RequestBody BoardDto boarddto){
+    
+    // 1. -------------- 전역변수 --------------
+    // 1. 서비스 메소드 호출 위한 객체 생성 [ ioc 제어역전 ]
+        // 1. 개발자가 new 사용해서 jvm힙 메모리 할당해서 객체 생성
+        // private Boardservice boardservice = new Boardservice();
+        // 2. @Autowired 어느테이션 이용해서 Spring 컨테이너에 빈[메모리] 생성
+    @Autowired
+    private Boardservice boardservice;
+    // 2. -------------- 페이지 로드 [view] -------------
+        // 1. 게시물목록 페이지 열기
+        @GetMapping("/list")
+        public Resource getlist(){return new ClassPathResource("templates/board/list.html");}
+        // 2. 게시물쓰기 페이지 열기
+        @GetMapping("/write")
+        public Resource getwrite(){return new ClassPathResource("templates/board/write.html");}
 
-        // 1. dto 내용 확인
-        System.out.println(boarddto.toString());
-        // 2. -----> 서비스[ 비즈니스 로직 ] 으로 이동
-        boolean result = new Boardservice().setboard(boarddto);
-        // 3. 반환
-        return true;
-        // boolean :            ContentType : application/json
-        // string :             ContentType : text/html; charset=  UTF-8
-        // Resource :       ContentType : text/html
+    // 3. 게시물조회 페이지 열기
+        @GetMapping("/view")
+        public Resource getview(){return new ClassPathResource("templates/board/view.html");}
 
-    }
-    // 2. 게시물 목록보기 처리
-    @GetMapping("/getboards")
-    @ResponseBody
-    public ArrayList<BoardDto> getboards(){
-        // 1. -------------> 서비스[ 비즈니스 로직 ] 로 이동
-        ArrayList<BoardDto> list = new Boardservice().getboards();
-        // 2. 반환
-        return  list;
-    }
-  /*  // 3. 게시물 개별조회 처리
-    @GetMapping("/getboard")
-    // 4. 게시물 수정 처리
-    @PutMapping("/updateboard")
-    // 5. 게시물 삭제 처리
-    @DeleteMapping ("/deleteboard")*/
+    // 4. 게시물수정 페이지 열기
+        @GetMapping("/update")
+        public Resource getupdate(){return new ClassPathResource("templates/board/update.html");}
 
+    // 3. -------------- 요청과응답 처리 [ model] -----------------
+        // 1. HTTP 요청 메소드 매핑 : @PostMapping @GetMapping @DeleteMapping @PutMapping
+        // 2. HTTP 데이터 요청 메소드 매핑 :  @RequestBody @RequestParam
+        // 1. 게시물 쓰기
+        @PostMapping("/setboard")
+        public boolean setboard(@RequestBody BoardDto boardDto){
+            return boardservice.setboard(boardDto);
+
+        }
+        // 2. 게시물 목록 조회 [ 페이징,검색 ]
+        @GetMapping("/boardlist")
+        public List<BoardDto> boardlist(){
+            return boardservice.boardlist();
+
+        }
+        // 3. 게시물 개별 조회
+        @GetMapping("/getboard")
+        public BoardDto getboard(@RequestParam("bno") int bno){
+            return boardservice.getboard(bno);
+
+        }
+        // 4. 게시물 삭제
+        @DeleteMapping("/delboard")
+        public boolean delboard(@RequestParam("bno") int bno){
+            return boardservice.delboard(bno);
+
+        }
+        // 5. 게시물 수정 [ 첨부파일 ]
+        @PutMapping("/upboard")
+        public boolean upboard(@RequestBody BoardDto boardDto){
+            return boardservice.upboard(boardDto);
+
+        }
 }
