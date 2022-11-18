@@ -1,6 +1,6 @@
 package com.Ezenweb.domain.Dto;
 
-import com.Ezenweb.domain.entity.MemberEntity;
+import com.Ezenweb.domain.entity.member.MemberEntity;
 import lombok.*;
 
 @NoArgsConstructor @AllArgsConstructor

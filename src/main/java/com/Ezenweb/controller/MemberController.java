@@ -1,16 +1,11 @@
 package com.Ezenweb.controller;
 import com.Ezenweb.domain.Dto.MemberDto;
-import com.Ezenweb.domain.entity.MemberEntity;
 import com.Ezenweb.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController // Restful api 사용하는 controller 명시
@@ -92,6 +87,6 @@ public class MemberController {
     @GetMapping("/getauth")
     public  String getauth(@RequestParam("toemail") String toemail){
      //  return  memberService.getauth( "dlwhdgns47@naver.com" );
-    return  "123456";
+    return  "1234";
     }
 }

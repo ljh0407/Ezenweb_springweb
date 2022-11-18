@@ -3,7 +3,8 @@ function setmember(){
 
     let info = {
         memail : document.querySelector('.memail').value ,
-        mpassword : document.querySelector('.mpassword').value
+        mpassword : document.querySelector('.mpassword').value,
+         mphone : document.querySelector('.mphone').value
     }
 
     let timerbox = document.querySelector('.timerbox').innerHTML
@@ -18,7 +19,7 @@ function setmember(){
     })
 }
 // 2. 인증코드 요청
-let auth = null;        // 발급된 인증코드
+let auth = 1234;        // 발급된 인증코드
 let timer = 0;          // 인증 시간
 let timerinter = null; // setInterval 함수객체
 function getauth(){

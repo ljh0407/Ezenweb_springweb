@@ -1,14 +1,14 @@
 package com.Ezenweb.service;
 
-import com.Ezenweb.domain.Dao.BoardDao;
 import com.Ezenweb.domain.Dto.BoardDto;
-import com.Ezenweb.domain.entity.BoardEntity;
-import com.Ezenweb.domain.entity.BoardRepository;
+import com.Ezenweb.domain.entity.board.BoardEntity;
+import com.Ezenweb.domain.entity.board.BoardRepository;
+import com.Ezenweb.domain.entity.member.MemberEntity;
+import com.Ezenweb.domain.entity.member.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,10 @@ public class Boardservice {
     @Autowired // null
     private BoardRepository boardRepository;
     // @Transactional : 엔티티 DML 적용 할때 사용되는 어노테이션
+    @Autowired
+    private HttpServletRequest request; // 요청 객체 선언
+    @Autowired
+    private MemberRepository memberRepository;  // 회원 리포지토리 객체 선언
         /*
                 1. insert : boardRepository.save(엔티티)
                 2. select : boardRepository.findAll()
@@ -32,10 +36,28 @@ public class Boardservice {
     // 1. 게시물 쓰기
     @Transactional
     public boolean setboard( BoardDto boardDto){
-        // 1. dto --> entity [ insert ] 저장된 entity 반환
-        BoardEntity entity = boardRepository.save(boardDto.toEntity() );
+
+        // 1. 로그인 정보 확인[ 세션 = loginMno ]
+        Object object = request.getSession().getAttribute("loginMno" );
+        if( object == null ){return false;}
+
+        // 2. 로그인된 회원정보 호출
+        int mno = (Integer)object;
+        // 3. 회원정보 --> 회원정보 호출
+        Optional<MemberEntity> optional = memberRepository.findById(mno);
+        if(!optional.isPresent()){return false;}
+        // 4. 로그인된 회원의 엔티티
+        MemberEntity memberEntity = optional.get();
+// 1. dto --> entity [ insert ] 저장된 entity 반환
+        BoardEntity boardEntity = boardRepository.save(boardDto.toEntity() );
         // 2. 게시물번호가 0이 아니면
-        if(entity.getMno() != 0){return true;}
+        if(boardEntity.getBno() != 0){
+            // **** 5. fk 대입
+            boardEntity.setMemberEntity(memberEntity);
+            // *** 양방향 [ pk필드에 fk 연결 ]
+            memberEntity.getBoardEntityList().add(boardEntity);
+            return true;
+        }
         else{return false;}
     }
     // 2. 게시물 목록 조회
@@ -90,4 +112,7 @@ public class Boardservice {
             return true;
         }else{ return false;}
     }
+    // 6. 조회수증가
+
+
 }
