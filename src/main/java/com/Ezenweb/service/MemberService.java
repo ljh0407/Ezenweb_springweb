@@ -18,7 +18,6 @@ import java.util.Random;
 
 @Service // 해당 클래스가 Service 명시 // 1. 비지니스 로직 [ 알고리즘 - 기능 ]
 public class MemberService {
-
     // --------------------------------- 전역 객체  ---------------------------------- //
     @Autowired
     private MemberRepository memberRepository;  // 리포지토리 객체

@@ -52,10 +52,10 @@ function bcategorylist(){
     console.log(c)
             html += '<button type="button" onclick="bcnochage('+c.bcno+')">'+c.bcname+'</button>';
             })
-            document.querySelector(".bccategorybox").innerHTML = html;
+            document.querySelector(".bcategorybox").innerHTML = html;
         }
     })
 }
 
 // 4. 카테고리를 선택했을때 선택된 카테고리 번호 eodlq
-function bcnochage(cno) {bcno = cno;}
+function bcnochage(cno) {bcno = cno; alert(bcno)}

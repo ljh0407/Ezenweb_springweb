@@ -2,6 +2,7 @@ package com.Ezenweb.controller;
 
 import com.Ezenweb.domain.Dto.BcategoryDto;
 import com.Ezenweb.domain.Dto.BoardDto;
+import com.Ezenweb.domain.Dto.GboardDto;
 import com.Ezenweb.service.Boardservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -40,6 +41,9 @@ public class BoardController {
         @GetMapping("/update")
         public Resource getupdate(){return new ClassPathResource("templates/board/update.html");}
 
+    // 5. 비회원게시판 페이지 열기
+        @GetMapping("/gboard")
+        public Resource gboard(){return new ClassPathResource("templates/board/gboard.html");}
     // 3. -------------- 요청과응답 처리 [ model] -----------------
         // 1. HTTP 요청 메소드 매핑 : @PostMapping @GetMapping @DeleteMapping @PutMapping
         // 2. HTTP 데이터 요청 메소드 매핑 :  @RequestBody @RequestParam
@@ -51,9 +55,8 @@ public class BoardController {
         }
         // 2. 게시물 목록 조회 [ 페이징,검색 ]
         @GetMapping("/boardlist")
-        public List<BoardDto> boardlist(){
-            return boardservice.boardlist();
-
+        public List<BoardDto> boardlist(@RequestParam("bcno") int bcno){
+            return boardservice.boardlist(bcno);
         }
         // 3. 게시물 개별 조회
         @GetMapping("/getboard")
@@ -81,5 +84,11 @@ public class BoardController {
         @GetMapping("/bcategorylist")
         public List<BcategoryDto> bcategoryList(){
             return  boardservice.bcategorylist();
+        }
+
+        // 8. 비회원게시판 글등록
+        @PostMapping("/setgboard")
+        public  boolean setgboard(@RequestBody GboardDto gboardDto){
+            return boardservice.setgboard(gboardDto);
         }
 }

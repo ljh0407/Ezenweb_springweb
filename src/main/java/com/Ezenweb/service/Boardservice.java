@@ -2,6 +2,9 @@ package com.Ezenweb.service;
 
 import com.Ezenweb.domain.Dto.BcategoryDto;
 import com.Ezenweb.domain.Dto.BoardDto;
+import com.Ezenweb.domain.Dto.GboardDto;
+import com.Ezenweb.domain.entity.Gboard.GboardEntity;
+import com.Ezenweb.domain.entity.Gboard.GboardRepository;
 import com.Ezenweb.domain.entity.bcategory.BcategoryEntity;
 import com.Ezenweb.domain.entity.bcategory.BcategoryRepository;
 import com.Ezenweb.domain.entity.board.BoardEntity;
@@ -32,6 +35,8 @@ public class Boardservice {
     private BcategoryRepository bcategoryRepository;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private GboardRepository gboardRepository;
         /*
                 1. insert : boardRepository.save(엔티티)
                 2. select : boardRepository.findAll()
@@ -70,16 +75,19 @@ public class Boardservice {
     }
     // 2. 게시물 목록 조회
     @Transactional
-    public List<BoardDto> boardlist(){
-        // 1. 모든 엔티티 호출한다.
-       List<BoardEntity> elist =   boardRepository.findAll() ;
-        // 2. 컨트롤에게 전달할때 형변환
-        List<BoardDto> dlist = new ArrayList<>();
-        // 3. 변환
-        for(BoardEntity entity : elist){
-            dlist.add(entity.toDto());
-        }
-        return dlist;
+    public List<BoardDto> boardlist( int bcno){
+        List<BoardEntity> elist = null;
+        if( bcno == 0 ){ // 카테고리번호가 0 이면 전체보기
+          elist =  boardRepository.findAll() ;  // 1. 모든 엔티티 호출한다.
+        } else {
+         BcategoryEntity bcEntity =  bcategoryRepository.findById( bcno ).get();
+         elist = bcEntity.getBoardEntityList(); // 해당 엔티티의 게시물목록
+        }// 카테고리 번호가 0이 아니면 선택된 카테고리별 보기
+            List<BoardDto> dlist = new ArrayList<>();  // 2. 컨트롤에게 전달할때 형변환
+            for(BoardEntity entity : elist){  // 3. 변환
+                dlist.add(entity.toDto());
+            }
+            return dlist;
     }
     // 3. 게시물 개별 조회
     @Transactional
@@ -132,6 +140,14 @@ public class Boardservice {
         List<BcategoryDto> dtolist = new ArrayList<>();
         entityList.forEach( e -> dtolist.add(e.toDto() ) );
         return dtolist;
+    }
+    @Transactional
+    // 8. 비회원게시판 글등록
+    public  boolean setgboard(GboardDto gboardDto){
+       GboardEntity entity = gboardRepository.save( gboardDto.toEntity() );
+       if( entity.getGbcno() != 0){
+        return true;
+       }else{return false;}
     }
 }
 
