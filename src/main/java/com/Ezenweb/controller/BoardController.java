@@ -1,5 +1,6 @@
 package com.Ezenweb.controller;
 
+import com.Ezenweb.domain.Dto.BcategoryDto;
 import com.Ezenweb.domain.Dto.BoardDto;
 import com.Ezenweb.service.Boardservice;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,14 @@ public class BoardController {
         public boolean upboard(@RequestBody BoardDto boardDto){
             return boardservice.upboard(boardDto);
         }
-        // 6. 조회수
-
+        // 6. 카테고리 등록
+        @PostMapping("/setbcategory")
+        public  boolean setbcategory(@RequestBody BcategoryDto bcategoryDto){
+            return boardservice.setbcategory(bcategoryDto);
+        }
+        // 7. 모든 카테고리 출력
+        @GetMapping("/bcategorylist")
+        public List<BcategoryDto> bcategoryList(){
+            return  boardservice.bcategorylist();
+        }
 }

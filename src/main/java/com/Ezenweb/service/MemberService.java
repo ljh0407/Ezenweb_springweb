@@ -28,6 +28,20 @@ public class MemberService {
     private JavaMailSender javaMailSender;
 
     // --------------------------------- 서비스 객체  ---------------------------------- //
+   // * 로그인된 엔티티 호출
+    public MemberEntity getEntity(){
+       // 1. 로그인 정보 확인[ 세션 = loginMno ]
+       Object object = request.getSession().getAttribute("loginMno" );
+       if( object == null ){return null;}
+       // 2. 로그인된 회원정보 호출
+       int mno = (Integer)object;
+       // 3. 회원정보 --> 회원정보 호출
+       Optional<MemberEntity> optional = memberRepository.findById(mno);
+       if(!optional.isPresent()){return null;}
+       // 4. 로그인된 회원의 엔티티
+        return optional.get();
+    }
+
     // 1. 회원가입
     @Transactional
     public int setmember(MemberDto memberDto) {
