@@ -23,6 +23,7 @@ public class MemberEntity extends BaseEntity {
     private String mpassword; // 비밀번호 필드
     @Column(nullable = false)  // db = not null
     private String mphone;      // 전화번호 필드
+    // 연관관계
     @OneToMany(mappedBy = "memberEntity") // [ 1: n ]일때 PK에 해당 어노테이션  mappedBy = "fk필드명"
     @Builder.Default // 빌더 사용시 해당 필드의 초기값설정
     private List<BoardEntity> boardEntityList = new ArrayList<>();

@@ -2,6 +2,7 @@ package com.Ezenweb.controller;
 
 import com.Ezenweb.domain.Dto.BcategoryDto;
 import com.Ezenweb.domain.Dto.BoardDto;
+import com.Ezenweb.domain.Dto.GbcategoryDto;
 import com.Ezenweb.domain.Dto.GboardDto;
 import com.Ezenweb.service.Boardservice;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,5 +91,23 @@ public class BoardController {
         @PostMapping("/setgboard")
         public  boolean setgboard(@RequestBody GboardDto gboardDto){
             return boardservice.setgboard(gboardDto);
+        }
+
+        // 9. 비회원게시판 글목록
+        @GetMapping("/gboardlist")
+        public List<GboardDto> gboardlist(){
+            return boardservice.gboardlist();
+        }
+
+        // 10. 카테고리 등록
+        @PostMapping("/setgbcategory")
+        public  boolean setgbcategory(@RequestBody GbcategoryDto gbcategoryDto){
+            return boardservice.setgbcategory(gbcategoryDto);
+        }
+
+        // 11. 카테고리 출력
+        @GetMapping("/gbcategorylist")
+        public List<GbcategoryDto> gbcategorylist(){
+            return boardservice.gbcategorylist();
         }
 }

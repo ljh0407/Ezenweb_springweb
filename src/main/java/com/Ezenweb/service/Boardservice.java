@@ -2,7 +2,10 @@ package com.Ezenweb.service;
 
 import com.Ezenweb.domain.Dto.BcategoryDto;
 import com.Ezenweb.domain.Dto.BoardDto;
+import com.Ezenweb.domain.Dto.GbcategoryDto;
 import com.Ezenweb.domain.Dto.GboardDto;
+import com.Ezenweb.domain.entity.Gbcategory.GbcategoryEntity;
+import com.Ezenweb.domain.entity.Gbcategory.GbcategoryRepository;
 import com.Ezenweb.domain.entity.Gboard.GboardEntity;
 import com.Ezenweb.domain.entity.Gboard.GboardRepository;
 import com.Ezenweb.domain.entity.bcategory.BcategoryEntity;
@@ -37,6 +40,8 @@ public class Boardservice {
     private MemberService memberService;
     @Autowired
     private GboardRepository gboardRepository;
+    @Autowired
+    private GbcategoryRepository gbcategoryRepository;
         /*
                 1. insert : boardRepository.save(엔티티)
                 2. select : boardRepository.findAll()
@@ -143,11 +148,35 @@ public class Boardservice {
     }
     @Transactional
     // 8. 비회원게시판 글등록
-    public  boolean setgboard(GboardDto gboardDto){
+    public boolean setgboard(GboardDto gboardDto){
        GboardEntity entity = gboardRepository.save( gboardDto.toEntity() );
-       if( entity.getGbcno() != 0){
-        return true;
-       }else{return false;}
+       if(entity.getGbno() != 0){
+           return true;
+       }else {return false;}
+    }
+
+    // 9. 비회원게시물 목록
+    public List<GboardDto> gboardlist(){
+        List<GboardEntity> gboardEntityList = gboardRepository.findAll();
+        List<GboardDto> gboardDtoList = new ArrayList<>();
+        gboardEntityList.forEach( g -> gboardDtoList.add(g.toDto()) );
+        return gboardDtoList;
+    }
+
+    // 10. 비회원게시판 카테고리등록
+    public boolean setgbcategory(GbcategoryDto gbcategoryDto){
+        GbcategoryEntity entity = gbcategoryRepository.save( gbcategoryDto.toEntity());
+        if(entity.getGbcno() != 0){
+            return  true;
+        }else{return false;}
+    }
+
+    // 11. 비회원 카테고리 출력
+    public List<GbcategoryDto> gbcategorylist(){
+        List<GbcategoryEntity> gbcategoryEntityList = gbcategoryRepository.findAll();
+        List<GbcategoryDto> gbcategorylist = new ArrayList<>();
+        gbcategoryEntityList.forEach(gbc -> gbcategorylist.add(gbc.toDto()));
+        return  gbcategorylist;
     }
 }
 

@@ -1,4 +1,4 @@
-alert('연동')
+
 // 게시글 등록
 function setboard(){
     let data = {

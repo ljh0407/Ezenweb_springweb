@@ -21,7 +21,6 @@ public class GboardDto {
                 .gbtitle(this.gbtitle)
                 .gbcontent(this.gbcontent)
                 .gbwrite(this.gbwrite)
-                .gbcno(this.gbcno)
                 .build();
     }
 

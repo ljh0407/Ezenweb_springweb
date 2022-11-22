@@ -1,12 +1,10 @@
-alert('인덱스')
+
 getloginMno()
 function getloginMno(){
     $.ajax({
     url : "/member/getloginMno",
     type : "get",
     success : function(re) {
-
-        alert(re)
         let headerbox = ' ';
         if( re == "0"){ // 로그인 안했다
             headerbox +=

@@ -6,13 +6,18 @@
 </head>
 <body>
           <h3>비회원게시판</h3>
+          <input type="text" class="gbcname"> <button type="button" onclick="setgbcategory()">카테고리추가</button>
+          <span class="gbcategorybox"></span>
             <form>
           제목<input type="text" class="gbtitle">
           내용<input type="text" class="gbcontent">
           작성자<input type="text" class="gbwrite">
          <button type="button" onclick="setgboard()">글등록</button>
             </form>
+            <table class="gtable">
 
+
+            </table>
           <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
           <script src="/js/board/gboard.js"></script>
 
