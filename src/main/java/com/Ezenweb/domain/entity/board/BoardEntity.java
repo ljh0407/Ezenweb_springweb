@@ -26,7 +26,7 @@ public class BoardEntity extends BaseEntity {
     @Column(nullable = false) // not null
     @ColumnDefault("0") // jpa insert 할 경우 default
     private int bview;          // 조회수
-    @Column(nullable = false) // not null
+    @Column
     private String bfile;        // 첨부파일
 
     // 연관관계
@@ -40,6 +40,7 @@ public class BoardEntity extends BaseEntity {
     @JoinColumn(name = "bcno")
     @ToString.Exclude // ToString 제외
     private BcategoryEntity bcategoryEntity;
+
 
     /*
     @OneToOne       1 : 1  회원이 하나의 게시물만 작성 가능 할때
@@ -55,7 +56,6 @@ public class BoardEntity extends BaseEntity {
                 .btitle(this.btitle)
                 .bcontent(this.bcontent)
                 .bview(this.bview)
-                .bfile(this.bfile)
                 .memail(this.memberEntity.getMemail())
                 .build();
     }

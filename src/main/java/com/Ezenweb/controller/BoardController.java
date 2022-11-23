@@ -29,7 +29,9 @@ public class BoardController {
     // 2. -------------- 페이지 로드 [view] -------------
         // 1. 게시물목록 페이지 열기
         @GetMapping("/list")
-        public Resource getlist(){return new ClassPathResource("templates/board/list.html");}
+        public Resource getlist(){
+            return new ClassPathResource("templates/board/list.html");
+        }
         // 2. 게시물쓰기 페이지 열기
         @GetMapping("/write")
         public Resource getwrite(){return new ClassPathResource("templates/board/write.html");}
@@ -48,11 +50,17 @@ public class BoardController {
     // 3. -------------- 요청과응답 처리 [ model] -----------------
         // 1. HTTP 요청 메소드 매핑 : @PostMapping @GetMapping @DeleteMapping @PutMapping
         // 2. HTTP 데이터 요청 메소드 매핑 :  @RequestBody @RequestParam
-        // 1. 게시물 쓰기
+    /*
+    @PostMapping("/setboard")  첨부파일 없을때
+    public boolean setboard(@RequestBody BoardDto boardDto){
+        System.out.println("확인 : "+ boardDto.toString() );
+        return boardservice.setboard(boardDto);
+    }    */
+        // 1. 게시물 쓰기 [ 첨부파일 있을때 @RequestBody 생략 ]
         @PostMapping("/setboard")
-        public boolean setboard(@RequestBody BoardDto boardDto){
+        public boolean setboard( BoardDto boardDto){
+            System.out.println("확인 : "+ boardDto.toString() );
             return boardservice.setboard(boardDto);
-
         }
         // 2. 게시물 목록 조회 [ 페이징,검색 ]
         @GetMapping("/boardlist")
@@ -87,16 +95,24 @@ public class BoardController {
             return  boardservice.bcategorylist();
         }
 
+        // 8. 첨부파일 다운로드
+        @GetMapping("/filedownload")
+        public void filedownload(@RequestParam("filename") String filename){
+            boardservice.filedownload(filename);
+        }
+
         // 8. 비회원게시판 글등록
         @PostMapping("/setgboard")
         public  boolean setgboard(@RequestBody GboardDto gboardDto){
+            System.out.println(gboardDto.toString());
             return boardservice.setgboard(gboardDto);
         }
 
         // 9. 비회원게시판 글목록
         @GetMapping("/gboardlist")
-        public List<GboardDto> gboardlist(){
-            return boardservice.gboardlist();
+        public List<GboardDto> gboardlist(@RequestParam("gbcno") int gbcno){
+            System.out.println(gbcno);
+            return boardservice.gboardlist(gbcno);
         }
 
         // 10. 카테고리 등록

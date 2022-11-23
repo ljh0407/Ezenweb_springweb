@@ -18,20 +18,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 @Service // 컴포넌트 [ Spring MVC ]
 public class Boardservice {
-    // 1. -------------- 전역변수 --------------
+    // 1. -------------- 전역변수 -----[ 현재 서비스객체 @Autowired ]---------
     @Autowired // null
     private BoardRepository boardRepository;
     // @Transactional : 엔티티 DML 적용 할때 사용되는 어노테이션
     @Autowired
     private HttpServletRequest request; // 요청 객체 선언
+    @Autowired
+    private HttpServletResponse response; // 응답 객체 선언
     @Autowired
     private MemberRepository memberRepository;  // 회원 리포지토리 객체 선언
     @Autowired
@@ -42,6 +51,10 @@ public class Boardservice {
     private GboardRepository gboardRepository;
     @Autowired
     private GbcategoryRepository gbcategoryRepository;
+
+
+    // 첨부파일 경로
+    String path = "C:\\Users\\504\\Desktop\\springweb\\Ezenweb_springweb\\src\\main\\resources\\static\\js\\bupload\\";
         /*
                 1. insert : boardRepository.save(엔티티)
                 2. select : boardRepository.findAll()
@@ -51,6 +64,39 @@ public class Boardservice {
          */
 
     // 2. -------------- 서비스 ------------
+    // 0. 첨부파일 다운로드
+    public void filedownload( String filename){
+        String realfilename = ""; // uuid 제거
+        String [] split = filename.split("_");  // 1. _기준으로 자르기
+        for( int i = 0 ; i<split.length ; i++){ // 2. uuid 제외한 반복문 돌리기
+            realfilename += split[i];       // 3. 뒷자리 문자열 추가
+            if(split.length-1 != i ){       // 마지막 인덱스가 아니면
+                realfilename += "_";       // 문자열[1] _ 문자열[2] _ 문자열 [3]. 확장자명
+            }
+        }
+        String filepath = path+filename; // 1. 경로 찾기
+        // 2. 헤더 구성 [
+        try {
+            response.setHeader( // 응답
+                    "Content-Disposition", // 다운로드 형식 [ 브라우저 마다 다름 ]
+                    "attachment; filename=" + URLEncoder.encode( realfilename, "UTF-8" ) );  // 다운로드에 표시될 파일명
+            File file = new File( filepath );
+            // 3. 다운로드 스트림 [ ]
+            // 1. 다운로드 할 파일 바이트 읽어올 스트림 객체 선언
+            BufferedInputStream fin = new BufferedInputStream( new FileInputStream(file) );
+            // 2. 파일의 길이만큼 배열 선언
+            byte[] bytes = new byte[ (int)file.length() ];
+            // 3. 파일의 길이만큼 읽어와서 바이트를 배열에 저장
+            fin.read(bytes);
+            // 4. 출력 스트림 객체 선언
+            BufferedOutputStream fout = new BufferedOutputStream(response.getOutputStream() );
+            // 5. 응답하기 [ 배열 내보내기 ]
+            fout.write(bytes);
+            // 6. 버퍼 초기화 혹은 스트림 닫기
+            fout.flush(); fout.close(); fin.close();
+         }catch (Exception e){System.out.println(e);}
+    }
+
     // 1. 게시물 쓰기
     @Transactional
     public boolean setboard( BoardDto boardDto){
@@ -65,7 +111,32 @@ public class Boardservice {
         BoardEntity boardEntity = boardRepository.save(boardDto.toEntity() );
         // 2. 게시물번호가 0이 아니면
         if(boardEntity.getBno() != 0){
-            // **** 5. fk 대입
+
+            // 1. MultipartFile 인터페이스
+                // .getOriginalFilename() : 해당 인터페이스에 연결(주소)된 파일의 이름 호출
+                // .transferTo() : 파일이동 [ 사용자pc ---> 개발자pc ]
+                    // .transferTo( 파일객체 )
+                    // File
+
+            // * 업로드된 파일의 이름 [ 문제점 : 파일명 중복 ]
+            String uuid = UUID.randomUUID().toString();  // 1. 난수생성
+            String filename = uuid + "_" + boardDto.getBfile().getOriginalFilename(); // 2. 난수+파일명
+            // 1. pk + 파일명
+            // 2. uuid + 파일명
+            // 3. 업로드 날짜/시간 + 파일명
+            // 4. 중복된 파일명 중 최근파일명뒤에  파일명 + (중복수+1)
+
+            // * 첨부파일명 db에 등록
+            boardEntity.setBfile(filename) ; // 해당 파일명 엔티티에 저장 // 3. 난수 + 파일명으 엔티티에 저장
+
+            // * 첨부파일업로드 // 3. 저장할 경로
+            try {
+                File upliardfile = new File(path+ filename);   // 4. 경로 + 파일명 [ 객체화 ]
+                boardDto.getBfile().transferTo( upliardfile );  // 5. 해당객체 경로로 업로드
+            } catch (Exception e){
+                System.out.println("첨부파일 업로드 실패 ");
+            }
+
             // 1. 회원 <---> 게시물 연관관계 대입
             boardEntity.setMemberEntity(memberEntity);  // p. 268 32번 줄
             // *** 양방향 [ pk필드에 fk 연결 ]
@@ -129,7 +200,6 @@ public class Boardservice {
             // 수정처리 [ 메소드 별도 존재x / 엔티티<---> 레코드 / 엔티티 객체 자체를 수정 ]
             entity.setBtitle(boardDto.getBtitle());
             entity.setBcontent(boardDto.getBcontent());
-            entity.setBfile(boardDto.getBfile());
             return true;
         }else{ return false;}
     }
@@ -149,20 +219,40 @@ public class Boardservice {
     @Transactional
     // 8. 비회원게시판 글등록
     public boolean setgboard(GboardDto gboardDto){
-       GboardEntity entity = gboardRepository.save( gboardDto.toEntity() );
-       if(entity.getGbno() != 0){
+        System.out.println(gboardDto.getGbno());
+       GboardEntity gboardEntity = gboardRepository.save( gboardDto.toEntity() );
+       Optional<GbcategoryEntity> optional = gbcategoryRepository.findById(gboardDto.getGbcno() );
+        System.out.println(optional.isPresent());
+       if(!optional.isPresent() ){return false;}
+       GbcategoryEntity gbcategoryEntity = optional.get();
+       // dto --> entity [ insert ] 저장된 entity 반환
+       if(gboardEntity.getGbno() != 0){
+           gboardEntity.setGbcategoryEntity(gbcategoryEntity);
+           gbcategoryEntity.getGboardEntityList().add(gboardEntity);
            return true;
-       }else {return false;}
-    }
+       }else{
+           System.out.println("test");
+           return false;
+       }
 
+    }
+    @Transactional
     // 9. 비회원게시물 목록
-    public List<GboardDto> gboardlist(){
-        List<GboardEntity> gboardEntityList = gboardRepository.findAll();
-        List<GboardDto> gboardDtoList = new ArrayList<>();
-        gboardEntityList.forEach( g -> gboardDtoList.add(g.toDto()) );
-        return gboardDtoList;
+    public List<GboardDto> gboardlist(int gbcno){
+        List<GboardEntity> gboardEntityList = null;
+        if(gbcno == 0) {//카테고리 번호가 0 이면 전체보기
+            gboardEntityList = gboardRepository.findAll();  // 모든 엔티티 호출
+        }else {
+            GbcategoryEntity gbcategoryEntity = gbcategoryRepository.findById(gbcno).get();
+            gboardEntityList = gbcategoryEntity.getGboardEntityList(); // 선택한 엔티티 게시글 목록
+        } // 선택된 카테고리별 보기
+        List<GboardDto> gboardlist = new ArrayList<>(); //컨트롤에게 전달할떄 형변환
+        for(GboardEntity gboardEntity : gboardEntityList){ // 변환
+            gboardlist.add( gboardEntity.toDto());
+        }
+        return gboardlist;
     }
-
+    @Transactional
     // 10. 비회원게시판 카테고리등록
     public boolean setgbcategory(GbcategoryDto gbcategoryDto){
         GbcategoryEntity entity = gbcategoryRepository.save( gbcategoryDto.toEntity());
@@ -170,12 +260,12 @@ public class Boardservice {
             return  true;
         }else{return false;}
     }
-
+    @Transactional
     // 11. 비회원 카테고리 출력
     public List<GbcategoryDto> gbcategorylist(){
         List<GbcategoryEntity> gbcategoryEntityList = gbcategoryRepository.findAll();
         List<GbcategoryDto> gbcategorylist = new ArrayList<>();
-        gbcategoryEntityList.forEach(gbc -> gbcategorylist.add(gbc.toDto()));
+        gbcategoryEntityList.forEach(g -> gbcategorylist.add(g.toDto()));
         return  gbcategorylist;
     }
 }
