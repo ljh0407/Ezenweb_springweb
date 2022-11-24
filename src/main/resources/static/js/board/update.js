@@ -20,13 +20,14 @@ function upboard(){
         bfile : document.querySelector('.bfile').value,
         bno : bno
     }
+    console.log(data);
     $.ajax({
     url: '/board/upboard' ,
     type: 'put' ,
     data: JSON.stringify(data) ,
     contentType : 'application/json' , // --> @RequestBody
     success : function(re) {
-
+        console.log(re)
         if( re == true){
          alert("글수정 완료")
          location.href ="/board/view";}

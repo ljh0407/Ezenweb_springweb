@@ -43,5 +43,5 @@ function getview(bno){
        })
    }
 
-   // 4. 카테고리를 선택했을때 선택된 카테고리 번호 eodlq
+   // 4. 카테고리를 선택했을때 선택된 카테고리 번호
    function bcnochage(cno) {bcno = cno; alert(bcno); boardlist(); }

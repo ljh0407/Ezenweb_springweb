@@ -43,7 +43,6 @@ function gboardlist(){
 
 // 비회원게시판 카테고리 등록
 function setgbcategory(){
-    console.log("넘어와제발")
     let data = { gbcname : document.querySelector('.gbcname').value}
     console.log(data)
     $.ajax({
@@ -59,7 +58,7 @@ function setgbcategory(){
          }
     })
 }
-
+// 모든 카테고리 출력
 gbcategorylist()
 function gbcategorylist(){
     $.ajax({
@@ -77,5 +76,27 @@ function gbcategorylist(){
     })
 }
 
-// 선택된 카테 고리 번호
-function gbcnochage(cno){ gbcno = cno;  alert(gbcno);}
+// 선택된 카테고리 번호
+function gbcnochage(cno){ gbcno = cno;  alert(gbcno); gboardlist();}
+
+// 게시글 수정
+function upgboard(){
+    let data = {
+        gbtitle : document.querySelector(".gbtitle").value,
+        gbcontent : document.querySelector(".gbcontent").value,
+        gbno : gbno
+    }
+    $.ajax({
+    url : "/board/upgboard",
+    type : "put",
+    data : JSON.stringify(data),
+    contentType : "application/json",
+    success : function(re) {
+    console.log(re)
+    if ( re == true){
+    alert("수정완료")
+    location.href ="/board/gboard";
+            }else{alert("수정실패")}
+        }
+    })
+}

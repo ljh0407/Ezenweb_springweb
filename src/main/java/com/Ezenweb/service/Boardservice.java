@@ -56,10 +56,10 @@ public class Boardservice {
     // 첨부파일 경로
     String path = "C:\\Users\\504\\Desktop\\springweb\\Ezenweb_springweb\\src\\main\\resources\\static\\js\\bupload\\";
         /*
-                1. insert : boardRepository.save(엔티티)
-                2. select : boardRepository.findAll()
-                3. select : boardRepository.findby_id(pk번호)
-                4. delete : boardRepository.delete
+                1. insert : boardRepository.save(엔티티)  BoardEntity entity
+                2. select : boardRepository.findAll()           List<BoardEntity> elist
+                3. select : boardRepository.findby_id(pk번호) Optional<BoardEntity> optional
+                4. delete : boardRepository.delete ( 삭제할엔티티 )
 
          */
 
@@ -97,58 +97,56 @@ public class Boardservice {
          }catch (Exception e){System.out.println(e);}
     }
 
+    // ** 첨부파일 업로드
+    @Transactional    //  boardDto : 쓰기,수정 대상     BoardEntity:원본
+    public boolean fileupload( BoardDto boardDto  , BoardEntity boardEntity) {
+        if (boardDto.getBfile() != null) {  // ** 첨부파일 있을때
+            // * 업로드된 파일의 이름 [ 문제점 : 파일명 중복 ]
+            String uuid = UUID.randomUUID().toString();  // 1. 난수생성
+            String filename = uuid + "_" + boardDto.getBfile().getOriginalFilename(); // 2. 난수+파일명
+            // * 첨부파일명 db에 등록
+            boardEntity.setBfile(filename); // 해당 파일명 엔티티에 저장 // 3. 난수 + 파일명으 엔티티에 저장
+            // * 첨부파일업로드 // 3. 저장할 경로 [ 전역변수 ]
+            try {
+                File upliardfile = new File(path + filename);   // 4. 경로 + 파일명 [ 객체화 ]
+                boardDto.getBfile().transferTo(upliardfile);  // 5. 해당객체 경로로 업로드
+            } catch (Exception e) {
+                System.out.println("첨부파일 업로드 실패 ");
+            }
+            return true;
+        }else {return false;}
+    }
     // 1. 게시물 쓰기
     @Transactional
-    public boolean setboard( BoardDto boardDto){
+    public boolean setboard( BoardDto boardDto ){
         //-----------------------------------------//
         MemberEntity memberEntity = memberService.getEntity();
         if(memberEntity == null){return false;}
+        // ---------------------------- //
         // 선택한 번호
         Optional<BcategoryEntity> optional = bcategoryRepository.findById(boardDto.getBcno() );
         if(!optional.isPresent() ){return  false;}
         BcategoryEntity bcategoryEntity = optional.get();
+        // --------------------------  //
         // 1. dto --> entity [ insert ] 저장된 entity 반환
         BoardEntity boardEntity = boardRepository.save(boardDto.toEntity() );
         // 2. 게시물번호가 0이 아니면
-        if(boardEntity.getBno() != 0){
+        if( boardEntity.getBno() != 0 ){   // 2. 생성된 entity의 게시물번호가 0 이 아니면  성공
 
-            // 1. MultipartFile 인터페이스
-                // .getOriginalFilename() : 해당 인터페이스에 연결(주소)된 파일의 이름 호출
-                // .transferTo() : 파일이동 [ 사용자pc ---> 개발자pc ]
-                    // .transferTo( 파일객체 )
-                    // File
-
-            // * 업로드된 파일의 이름 [ 문제점 : 파일명 중복 ]
-            String uuid = UUID.randomUUID().toString();  // 1. 난수생성
-            String filename = uuid + "_" + boardDto.getBfile().getOriginalFilename(); // 2. 난수+파일명
-            // 1. pk + 파일명
-            // 2. uuid + 파일명
-            // 3. 업로드 날짜/시간 + 파일명
-            // 4. 중복된 파일명 중 최근파일명뒤에  파일명 + (중복수+1)
-
-            // * 첨부파일명 db에 등록
-            boardEntity.setBfile(filename) ; // 해당 파일명 엔티티에 저장 // 3. 난수 + 파일명으 엔티티에 저장
-
-            // * 첨부파일업로드 // 3. 저장할 경로
-            try {
-                File upliardfile = new File(path+ filename);   // 4. 경로 + 파일명 [ 객체화 ]
-                boardDto.getBfile().transferTo( upliardfile );  // 5. 해당객체 경로로 업로드
-            } catch (Exception e){
-                System.out.println("첨부파일 업로드 실패 ");
-            }
+            fileupload( boardDto , boardEntity ); // 업로드 함수 실행
 
             // 1. 회원 <---> 게시물 연관관계 대입
-            boardEntity.setMemberEntity(memberEntity);  // p. 268 32번 줄
-            // *** 양방향 [ pk필드에 fk 연결 ]
-            memberEntity.getBoardEntityList().add(boardEntity); // 43번 줄
-            // 2. 카테고리<---> 게시물 연관관계 대입
-            boardEntity.setBcategoryEntity(bcategoryEntity);
-            bcategoryEntity.getBoardEntityList().add(boardEntity);
-          
+            boardEntity.setMemberEntity( memberEntity ); // ***!!!! 5. fk 대입
+            memberEntity.getBoardEntityList().add( boardEntity); // *** 양방향 [ pk필드에 fk 연결 ]
+            // 2. 카테고리 <---> 게시물 연관관계 대입
+            boardEntity.setBcategoryEntity( bcategoryEntity );
+            bcategoryEntity.getBoardEntityList().add( boardEntity );
             return true;
         }
-        else{return false;}
+        else{ return false; } // 2. 0 이면 entity 생성 실패
     }
+
+
     // 2. 게시물 목록 조회
     @Transactional
     public List<BoardDto> boardlist( int bcno){
@@ -185,21 +183,37 @@ public class Boardservice {
         Optional<BoardEntity> optional = boardRepository.findById(bno);
         // 2. Optional 안에 있는 내용물 확인.isPresent()
         if( optional.isPresent()){
-            BoardEntity entity = optional.get();
-            boardRepository.delete(entity);
+            BoardEntity boardEntity = optional.get();
+            if (boardEntity.getBfile() != null) { // 기존 첨부파일 있을때
+                File file = new File(path + boardEntity.getBfile());
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+            boardRepository.delete(boardEntity);
             return true;
         }else {return false;}
     }
-    // 5. 게시물 수정
+    // 5. 게시물 수정 [ 첨부파일 1. 첨부파일이 있을때->첨부파일변경 2. 첨부파일이 없을때->첨부파일추가 ]
     @Transactional
     public boolean upboard(BoardDto boardDto){
+        System.out.println("수정 : "+boardDto.toString());
         // 1. DTO 수정할 PK번호 이용해서 엔티티 찾기
         Optional<BoardEntity> optional = boardRepository.findById(boardDto.getBno() );
-        if(optional.isPresent() ){
-            BoardEntity entity = optional.get();
+        if(optional.isPresent() ) {
+            BoardEntity boardEntity = optional.get();
+            // 1. 수정할 첨부파일이 있을때  ---> 새로운 첨부파일 업로드 , db 수정한다.
+            if (boardDto.getBfile() != null) { // boardDto : 수정할 정보 boardEntity : 원본
+                if (boardEntity.getBfile() != null) { // 기존 첨부파일 있을때
+                    File file = new File(path + boardEntity.getBfile());    // 기존 첨부파일 객체화
+                    if (file.exists()) {
+                        file.delete();}
+                }
+                fileupload(boardDto, boardEntity);   // 업로드 함수 실행
+            }
             // 수정처리 [ 메소드 별도 존재x / 엔티티<---> 레코드 / 엔티티 객체 자체를 수정 ]
-            entity.setBtitle(boardDto.getBtitle());
-            entity.setBcontent(boardDto.getBcontent());
+            boardEntity.setBtitle(boardDto.getBtitle());
+            boardEntity.setBcontent(boardDto.getBcontent());
             return true;
         }else{ return false;}
     }
@@ -244,6 +258,7 @@ public class Boardservice {
             gboardEntityList = gboardRepository.findAll();  // 모든 엔티티 호출
         }else {
             GbcategoryEntity gbcategoryEntity = gbcategoryRepository.findById(gbcno).get();
+            System.out.println("gbcno :"+gbcno);
             gboardEntityList = gbcategoryEntity.getGboardEntityList(); // 선택한 엔티티 게시글 목록
         } // 선택된 카테고리별 보기
         List<GboardDto> gboardlist = new ArrayList<>(); //컨트롤에게 전달할떄 형변환
@@ -268,9 +283,36 @@ public class Boardservice {
         gbcategoryEntityList.forEach(g -> gbcategorylist.add(g.toDto()));
         return  gbcategorylist;
     }
+
+    // 12. 비회원게시판 수정
+    @Transactional
+    public boolean upgboard(GboardDto gboardDto){
+    // 수정할 번호 호출
+    Optional<GboardEntity> optional = gboardRepository.findById(gboardDto.getGbno());
+        if (optional.isPresent()) {
+            GboardEntity gboardEntity = optional.get();
+            // 수정처리
+            gboardEntity.setGbtitle(gboardDto.getGbtitle());
+            gboardEntity.setGbcontent(gboardDto.getGbcontent());
+            return true;
+            }else{
+            return false;
+             }
+        }
 }
 
+/*
+      // 1. MultipartFile 인터페이스
+         // .getOriginalFilename() : 해당 인터페이스에 연결(주소)된 파일의 이름 호출
+         // .transferTo() : 파일이동 [ 사용자pc ---> 개발자pc ]
+         // .transferTo( 파일객체 )
+         // File
 
+           // 1. pk + 파일명
+         // 2. uuid + 파일명
+         // 3. 업로드 날짜/시간 + 파일명
+         // 4. 중복된 파일명 중 최근파일명뒤에  파일명 + (중복수+1)
+* */
 
 /*
 

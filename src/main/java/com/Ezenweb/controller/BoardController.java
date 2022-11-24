@@ -81,7 +81,7 @@ public class BoardController {
         }
         // 5. 게시물 수정 [ 첨부파일 ]
         @PutMapping("/upboard")
-        public boolean upboard(@RequestBody BoardDto boardDto){
+        public boolean upboard( BoardDto boardDto){
             return boardservice.upboard(boardDto);
         }
         // 6. 카테고리 등록
@@ -111,8 +111,8 @@ public class BoardController {
         // 9. 비회원게시판 글목록
         @GetMapping("/gboardlist")
         public List<GboardDto> gboardlist(@RequestParam("gbcno") int gbcno){
-            System.out.println(gbcno);
-            return boardservice.gboardlist(gbcno);
+            System.out.println("리스트 : "+gbcno);
+            return boardservice.gboardlist( gbcno);
         }
 
         // 10. 카테고리 등록
@@ -126,4 +126,11 @@ public class BoardController {
         public List<GbcategoryDto> gbcategorylist(){
             return boardservice.gbcategorylist();
         }
+
+        // 비회원글 수정
+        @PutMapping("/upgboard")
+        public boolean upgboard(@RequestBody GboardDto gboardDto){
+        return boardservice.upgboard(gboardDto);
+        }
+
 }
