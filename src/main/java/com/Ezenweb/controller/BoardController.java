@@ -17,8 +17,7 @@ import java.util.List;
 @RequestMapping("/board") // 공통 URL
 public class BoardController {
     // 컨트롤 역할 : HTTP 요청 / Model and View 응답
-    
-    
+
     // 1. -------------- 전역변수 --------------
     // 1. 서비스 메소드 호출 위한 객체 생성 [ ioc 제어역전 ]
         // 1. 개발자가 new 사용해서 jvm힙 메모리 할당해서 객체 생성
