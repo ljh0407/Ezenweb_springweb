@@ -12,8 +12,6 @@ public class Webstart {
     public static void main(String[] args) {
                                 // main 스레드
         SpringApplication.run(Webstart.class);  // 스프링 어플리케이션 실행 [ 현재클래스명 .class]
-
-
     }
 }
 
