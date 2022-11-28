@@ -1,4 +1,3 @@
-
 //  리액트 사용하기 전 js
 const name = '소플';  // js 문자 변수
 const element = '<h1>안녕, '+name+'</h1>';

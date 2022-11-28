@@ -1,0 +1,31 @@
+
+.wrapper{
+        margin : 8px;  /*바깥여백*/
+        border : 1px solid grey; /* 테두리 */
+        padding : 8px;  /* 안쪽여백 */
+        display : flex; /* 하위태그 가로배치*/
+        border-radius : 16px; /* 둥근모서리 */
+
+}
+
+.imgContainer{}
+
+.image{
+    width : 50px;
+    height : 50px;
+    border-radius : 25px;
+}
+.contentContainer{
+    margin-left : 8px;
+    display : flex;
+    justify-content : center;
+    flex-direction : column;
+}
+
+.nameText{
+    color : black; font-size : 16px; font-weight : bold;
+}
+
+.commentText{
+    color : black; font-size : 16px;
+}

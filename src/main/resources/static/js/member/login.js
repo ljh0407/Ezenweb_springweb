@@ -1,3 +1,4 @@
+/* [ 시큐리티 사용시 필요없음 ]
 alert('로그인')
 function getmember(){
     let info = {
@@ -11,4 +12,4 @@ function getmember(){
             contentType : "application/json",
             success : function(re) {alert(re)}
         })
-}
+}*/
