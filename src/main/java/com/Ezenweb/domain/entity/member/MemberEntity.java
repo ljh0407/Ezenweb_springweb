@@ -28,6 +28,8 @@ public class MemberEntity extends BaseEntity {
     @Builder.Default // 빌더 사용시 해당 필드의 초기값설정
     private List<BoardEntity> boardEntityList = new ArrayList<>();
 
+    @Column// 회원등급
+    private  String mrol;
 
 
     // 2. 생성자 [ 롬복으로 사용 ]

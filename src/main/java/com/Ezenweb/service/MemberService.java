@@ -47,16 +47,19 @@ public class MemberService implements UserDetailsService {
         return optional.get();
     }
 
-    // 1. 회원가입
+    // 1. [ 일반 ] 회원가입
     @Transactional
     public int setmember(MemberDto memberDto) {
 
         // 암호화 : 해시함수 사용하는 암호화 기법중 하나 [ BCrypt ]
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         memberDto.setMpassword( passwordEncoder.encode((memberDto.getPassword() ) ) );
+
         // 1. DAO 처리 [ dto --> entity  insert]
         MemberEntity entity = memberRepository.save(memberDto.toEntity());
         // memberRepository.save( 엔티티 객체 ) : 해당 엔티티 객체가 insert 생성된 엔티티객체 반환
+        //회원 등급 넣어주기
+        entity.setMrol("user");
         // 2. 결과 반환 [ 생성된 엔티티의 pk값 반환 ]
         return entity.getMno();
     }
@@ -95,7 +98,8 @@ public class MemberService implements UserDetailsService {
 
         // 2. 검증된 토큰생성 [ 일반 유저 ]
         Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("일반회원") );   // 토큰정보에 일반회원 내용 넣기
+        authorities.add(new SimpleGrantedAuthority(memberEntity.getMrol() )
+        );   // 토큰정보에 일반회원 내용 넣기
 
         // 3.
         MemberDto memberDto = memberEntity.toDto();  // 엔티티 --> Dto
