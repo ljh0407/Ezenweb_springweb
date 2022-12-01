@@ -41,7 +41,7 @@ public class MemberService
                                                                                         // userRequest 인증 결과 요청변수
         // 1. 인증[로그인] 결과 정보 요청
         OAuth2UserService oAuth2UserService = new DefaultOAuth2UserService();
-        OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
+        OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);  // oauth2 user.getAttributes()
         // 2. oauth2 클라이언트 식별 [ 카카오 vs 네이버 vs 구글 ]
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         // 3. 회원정보 담는 객체 [ JSON 형태 ]
@@ -51,18 +51,17 @@ public class MemberService
                 .getUserInfoEndpoint()
                 .getUserNameAttributeName();
         /*
-        2. kakao_account={profile_nickname_needs_agreement=false,
+        2. kakao_account={
+        profile_nickname_needs_agreement=false,
         profile={nickname=이종훈},
         has_email=true,
-        email_needs_agreement=true}}]
-
+        email_needs_agreement=true}}
+        ]
         */
 
         // 4. Dto 처리
         OauthDto oauthDto = OauthDto.of( registrationId , oauth2UserInfo , oAuth2User.getAttributes() );
-        // * DB처리
             // 권한부여
-        // 권한
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add( new SimpleGrantedAuthority("kakaoUser"));
 
