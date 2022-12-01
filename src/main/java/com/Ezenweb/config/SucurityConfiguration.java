@@ -14,9 +14,10 @@ public class SucurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private MemberService memberService;
 
-    @Override
+    @Override  // 인증(로그인) 관련 메소드 재정의
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(memberService).passwordEncoder((new BCryptPasswordEncoder()) );
+        // memberService 에서 UserDetailsService  구현했기 때문에 가능하다.
     }
 
     @Override   // 재정의 [ 상속받은 클래스로부터 메소드 재구현 ]
@@ -30,6 +31,7 @@ public class SucurityConfiguration extends WebSecurityConfigurerAdapter {
                     .failureUrl("/member/login")  // 로그인 실패시 이동할 URL
                     .usernameParameter("memail")             // 아이디 변수명
                     .passwordParameter("mpassword")     // 비밀번호 변수명
+
                 .and()  // 기능구분
                     .logout()   // 로그아웃 보안설정
                         .logoutRequestMatcher( new AntPathRequestMatcher("/member/logout"))  // 로그아웃 처리 URL 정의
@@ -38,9 +40,12 @@ public class SucurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()  // 기능구분
                     .csrf() // 요청 위조 방지
                         .ignoringAntMatchers("/member/getmember")  // 해당 URL 요청 방지 해지
-                        .ignoringAntMatchers("/member/setmember") ; // 회원가입 post 사용
+                        .ignoringAntMatchers("/member/setmember")  // 회원가입 post 사용
         //  super.configure(http); // 모든 HTTP 보안설정
-
+                .and()  // 기능구분
+                        .oauth2Login() // 소셜 로그인 보안 설정
+                        .userInfoEndpoint() // Endpoint : 소셜 회원정보가 들어오는곳
+                        .userService(memberService); // 해당 서비스 loadUser 메소드 구현
     }
 }
 
