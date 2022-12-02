@@ -61,13 +61,27 @@ public class MemberService
 
         // 4. Dto 처리
         OauthDto oauthDto = OauthDto.of( registrationId , oauth2UserInfo , oAuth2User.getAttributes() );
-            // 권한부여
+
+        // * DB 처리
+        // 1. 이메일로 엔티티 검색 [ 가입 , 기존회원 구분 ]
+        Optional<MemberEntity> optional
+                    = memberRepository.findByMemail( oauthDto.getMemail() );
+        MemberEntity memberEntity = null;
+        if ( optional.isPresent()) {  // 기존회원이면 // Optional 클래스 [ null 예외처리 방지 ]  포장지역할
+               memberEntity = optional.get();
+        }else { // 기존회원이 아니면 [ 가입 ]
+              memberEntity =  memberRepository.save( oauthDto.toEntity() );
+        }
+      /*  memberRepository.findByMemail(oauthDto.getMemail())
+                .orElseThrow( () ->  {})*/
+
+        // 권한부여
         Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add( new SimpleGrantedAuthority("kakaoUser"));
+        authorities.add( new SimpleGrantedAuthority(memberEntity.getMrol() ) );
 
         // 5. 반환 MemberDto [ 일반회원 vs oauth : 통합회원 - loginDto ]
         MemberDto memberDto = new MemberDto();
-            memberDto.setMemail( oauthDto.getMemail());
+            memberDto.setMemail( memberEntity.getMemail());
             memberDto.setAuthorities(authorities);
             memberDto.setAttributes( oauthDto.getAttributes());
         return memberDto;

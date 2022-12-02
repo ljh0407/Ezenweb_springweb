@@ -1,6 +1,7 @@
 import React from 'react';
 import Comment from './Comment'
 
+
 // 1. 데이터 리스트 [ 서버 통신과 통신된 결과물 ]
 const comments = [ // 댓글 3개 객체를 저장하는 리스트 객체
     {
