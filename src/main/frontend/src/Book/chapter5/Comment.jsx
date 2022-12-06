@@ -29,4 +29,4 @@ function Comment(props){
         )
 }
 // 3. 컴포넌트 내보내기
-export default Comment
+export default Comment;

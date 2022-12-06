@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@CrossOrigin
 @RestController // @Controller + @ResponseBody
 @RequestMapping("/board") // 공통 URL
 public class BoardController {
@@ -25,7 +25,7 @@ public class BoardController {
         // 2. @Autowired 어느테이션 이용해서 Spring 컨테이너에 빈[메모리] 생성
     @Autowired
     private Boardservice boardservice;
-    // 2. -------------- 페이지 로드 [view] -------------
+ /*   // 2. -------------- 페이지 로드 [view] -------------
         // 1. 게시물목록 페이지 열기
         @GetMapping("/list")
         public Resource getlist(){
@@ -45,7 +45,7 @@ public class BoardController {
 
     // 5. 비회원게시판 페이지 열기
         @GetMapping("/gboard")
-        public Resource gboard(){return new ClassPathResource("templates/board/gboard.html");}
+        public Resource gboard(){return new ClassPathResource("templates/board/gboard.html");}*/
     // 3. -------------- 요청과응답 처리 [ model] -----------------
         // 1. HTTP 요청 메소드 매핑 : @PostMapping @GetMapping @DeleteMapping @PutMapping
         // 2. HTTP 데이터 요청 메소드 매핑 :  @RequestBody @RequestParam

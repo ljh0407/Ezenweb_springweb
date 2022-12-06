@@ -50,3 +50,17 @@ function Signup(props) {
 }
 
 export default Signup;
+
+/*
+    // class -> className 변경
+    // onclick -> onClick 변경
+        // 함수호출 -> { } jsx 표현식
+    // 태그 닫기 /tag명
+        // 비동기 통신  [ ajax vs fetch[react내장] vs axios[react별도설치] ]
+            // axios 설치방법
+                // npm : 라이브러리 빌드/관리 [ node.js ]
+                // 1. [현재 프로젝트내] npm install axios
+            // axios 비동기통신 함수
+                // axios.MethodType( "통신URL" , 전송할data  )
+                    // axios.post( ) , axios.get( )  , axios.put( )  , axios.delete( )
+*/

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class IndexComtroller {
 
-    @GetMapping("/") // http://localhost:8080 -> 도메인구매시 www.ezenweb.com
+  /*  @GetMapping("/") // http://localhost:8080 -> 도메인구매시 www.ezenweb.com
     public Resource getindex() {
         return new ClassPathResource("templates/index.html");
-    }
+    }*/
 
 }
