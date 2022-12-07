@@ -9,7 +9,7 @@ function Signup(props) {
 
     // 1. setmember 이벤트 함수 정의
     const setmember = () => {
-         let info = {
+         let info = { // 입력받은 값 가져오기
                 memail : document.querySelector('.memail').value ,
                 mpassword : document.querySelector('.mpassword').value,
                 mphone : document.querySelector('.mphone').value
@@ -21,8 +21,16 @@ function Signup(props) {
                     // 1. npm install axios
         // @CrossOrigin(origins = "http://localhost:3000")
         axios           // 3. axios 비동기통신 이용한 서버[spring] 통신
-            .post("http://localhost:8080/member/setmember" , info) // 요청
-            .then( res => {alert(res.data) } )
+            .post("http://localhost:8080/member/setmember" , info) // 요청메소드 (url , data)
+            .then( res => {// 응답
+                let result = res.data;
+                if(result =! 0){ // 회원가입 성공
+                    alert('회원가입 성공')
+                }else{
+                    alert("회원가입 실패")
+                }
+            })
+            .catch( err => { console.log(err) } )       // 예외처리
      }
     // 2. 인증코드 요청 함수
     const getauth = () => {   alert("클릭이벤트") }
