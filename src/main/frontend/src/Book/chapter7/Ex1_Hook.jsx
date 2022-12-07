@@ -5,7 +5,7 @@
         // 2. 함수 : useState 라이브러리
 */
 // -------------1. 현재 페이지에서 사용될 라이브러리 import----------------
-import React , {useState} from 'react';
+import React , { useState, useEffect } from 'react';
 
 // 오류 : return 한번이기때문에 재 렌더링 불가능
 /*
@@ -24,6 +24,7 @@ export default function Counter( props ) {
     );
 }*/
 // 해결책 : 리액트 훅 이라는 곳에서 useState 라이브러리 사용하자
+/*
 export default function Counter( props ) {
 
     // -------------------2. JS 혹은 라이브러리------------------
@@ -42,4 +43,18 @@ export default function Counter( props ) {
                 </button>
         </div>
     );
+}*/
+
+export default function Counter( props ) {
+
+    const [ count , setCount ] = useState(0);
+
+    // useEffect ( 함수 , 의존성 배열 )
+            // 1. useEffect( () => {} )  :  () => {} 화살표함수[람다식] , 의존성배열 생략
+    useEffect ( () => {
+        document.title = `총 ${count}번 클릭했습니다.`      // `백틱
+        return ( () => {} )
+    });
+
+
 }
