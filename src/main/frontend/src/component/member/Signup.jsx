@@ -21,7 +21,7 @@ function Signup(props) {
                     // 1. npm install axios
         // @CrossOrigin(origins = "http://localhost:3000")
         axios           // 3. axios 비동기통신 이용한 서버[spring] 통신
-            .post("http://localhost:8080/member/setmember" , info) // 요청메소드 (url , data)
+            .post("/member/setmember" , info) // 요청메소드 (url , data)
             .then( res => {// 응답
                 let result = res.data;
                 if(result =! 0){ // 회원가입 성공

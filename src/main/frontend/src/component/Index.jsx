@@ -19,6 +19,19 @@ import Signup from './member/Signup';
 import Login from './member/Login';
 import BoardList from './board/BoardList';
 import BoardWrite from './board/BoardWrite';
+import Library from '../Book/chapter3/Library';
+import Clock from '../Book/chapter4/Clock';
+import CommentList from '../Book/chapter5/CommentList';
+import NotificationList from '../Book/chapter6/NotificationList';
+import Counter from '../Book/chapter7/Ex1_Hook';
+import Accommodate from '../Book/chapter7/Accommodate';
+import ConfirmButton from '../Book/chapter8/ConfirmButton';
+import ConfirmButton2 from '../Book/chapter8/ConfirmButton2';
+import TestState from '../Book/chapter8/TestState';
+import LandingPage from '../Book/chapter9/LandingPage';
+
+import BookList from '../Book/BookList';
+
 
 // 라우터 설치[ 터미널 ] : npm i react-router-dom  i = install 약자
 // import { 모듈명 } from 'react-router-dom';
@@ -42,6 +55,14 @@ export default function Index( props ){
                         <Route path="/member/login" element={ <Login/>} />
                         <Route path="/board/list" element={ <BoardList/>} />
                         <Route path="/board/write" element={ <BoardWrite/>} />
+                        <Route path="/book/list" element={ <BookList/>} />
+                        <Route path="/Book/chapter3" element={ <Library/>} />
+                        <Route path="/Book/chapter4" element={ <Clock/>} />
+                        <Route path="/Book/chapter5" element={ <CommentList/>} />
+                        <Route path="/Book/chapter6" element={ <NotificationList/>} />
+                        <Route path="/Book/chapter7" element={ <Accommodate/>} />
+                        <Route path="/Book/chapter8" element={ <ConfirmButton2/>} />
+                        <Route path="/Book/chapter9" element={ <LandingPage/>} />
                     </Routes>
                 <Footer/>
              </BrowserRouter>
