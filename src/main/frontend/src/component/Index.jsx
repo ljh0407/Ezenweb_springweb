@@ -29,7 +29,8 @@ import ConfirmButton from '../Book/chapter8/ConfirmButton';
 import ConfirmButton2 from '../Book/chapter8/ConfirmButton2';
 import TestState from '../Book/chapter8/TestState';
 import LandingPage from '../Book/chapter9/LandingPage';
-
+import AttendanceBook from '../Book/chapter10/AttendanceBook';
+import SignUp from '../Book/chapter11/SignUp';
 import BookList from '../Book/BookList';
 
 
@@ -55,14 +56,18 @@ export default function Index( props ){
                         <Route path="/member/login" element={ <Login/>} />
                         <Route path="/board/list" element={ <BoardList/>} />
                         <Route path="/board/write" element={ <BoardWrite/>} />
+
                         <Route path="/book/list" element={ <BookList/>} />
-                        <Route path="/Book/chapter3" element={ <Library/>} />
-                        <Route path="/Book/chapter4" element={ <Clock/>} />
-                        <Route path="/Book/chapter5" element={ <CommentList/>} />
-                        <Route path="/Book/chapter6" element={ <NotificationList/>} />
-                        <Route path="/Book/chapter7" element={ <Accommodate/>} />
-                        <Route path="/Book/chapter8" element={ <ConfirmButton2/>} />
-                        <Route path="/Book/chapter9" element={ <LandingPage/>} />
+
+                        <Route path="/chapter3/Library" element={ <Library/>} />
+                        <Route path="/chapter4/Clock" element={ <Clock/>} />
+                        <Route path="/chapter5/CommentList" element={ <CommentList/>} />
+                        <Route path="/chapter6/NotificationList" element={ <NotificationList/>} />
+                        <Route path="/chapter7/Accommodate" element={ <Accommodate/>} />
+                        <Route path="/chapter8/ConfirmButton2" element={ <ConfirmButton2/>} />
+                        <Route path="/chapter9/LandingPage" element={ <LandingPage/>} />
+                        <Route path="/chapter10/AttendanceBook" element={ <AttendanceBook/>} />
+                        <Route path="/chapter11/SignUp" element={ <SignUp/>} />
                     </Routes>
                 <Footer/>
              </BrowserRouter>

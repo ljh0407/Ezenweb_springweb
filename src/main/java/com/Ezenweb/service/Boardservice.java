@@ -55,7 +55,7 @@ public class Boardservice {
 
 
     // 첨부파일 경로
-    String path = "C:\\Users\\504\\Desktop\\spring\\Ezenweb_springweb\\src\\main\\resources\\static\\upload";
+    String path = "C:\\";
         /*
                 1. insert : boardRepository.save(엔티티)  BoardEntity entity
                 2. select : boardRepository.findAll()           List<BoardEntity> elist

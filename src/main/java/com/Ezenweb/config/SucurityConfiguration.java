@@ -11,10 +11,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration  // 설정 컴포넌트 주입
 public class SucurityConfiguration extends WebSecurityConfigurerAdapter {
+
     @Autowired
     private MemberService memberService;
 
-    @Override  // 인증(로그인) 관련 메소드 재정의
+    @Override  // 기본회원 인증(로그인) 관련 메소드 재정의
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(memberService).passwordEncoder((new BCryptPasswordEncoder()) );
         // memberService 에서 UserDetailsService  구현했기 때문에 가능하다.
@@ -23,7 +24,7 @@ public class SucurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override   // 재정의 [ 상속받은 클래스로부터 메소드 재구현 ]
     protected void configure(HttpSecurity http) throws Exception {
 
-        http
+            http
                 .formLogin()                            // 로그인 페이지 보안 설정
                     .loginPage("/member/login")  // 아이디와 비밀번호를 입력받을 URL [ 로그인 페이지 ]
                     .loginProcessingUrl("/member/getmember")    // 로그인을 처리할 URL
@@ -41,6 +42,8 @@ public class SucurityConfiguration extends WebSecurityConfigurerAdapter {
                     .csrf() // 요청 위조 방지
                         .ignoringAntMatchers("/member/getmember")  // 해당 URL 요청 방지 해지
                         .ignoringAntMatchers("/member/setmember")  // 회원가입 post 사용
+                        .ignoringAntMatchers("/board/setbcategory")  // 카테고리 추가 사용
+                        .ignoringAntMatchers("/board/setboard")  // 글작성 post 사용
         //  super.configure(http); // 모든 HTTP 보안설정
                 .and()  // 기능구분
                         .oauth2Login() // 소셜 로그인 보안 설정

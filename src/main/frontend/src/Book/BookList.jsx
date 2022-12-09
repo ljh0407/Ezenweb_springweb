@@ -10,6 +10,8 @@ export default function BookList( props ){
             <button><a href="/Book/chapter7">챕터7</a></button>
             <button><a href="/Book/chapter8">챕터8</a></button>
             <button><a href="/Book/chapter9">챕터9</a></button>
+            <button><a href="/Book/chapter10">챕터10</a></button>
+            <button><a href="/Book/chapter11">챕터11</a></button>
         </div>
     );
 }
