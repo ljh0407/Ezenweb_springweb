@@ -1,9 +1,6 @@
 package com.Ezenweb.controller;
 
-import com.Ezenweb.domain.Dto.BcategoryDto;
-import com.Ezenweb.domain.Dto.BoardDto;
-import com.Ezenweb.domain.Dto.GbcategoryDto;
-import com.Ezenweb.domain.Dto.GboardDto;
+import com.Ezenweb.domain.Dto.*;
 import com.Ezenweb.service.Boardservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -62,14 +59,9 @@ public class BoardController {
             return boardservice.setboard(boardDto);
         }
         // 2. 게시물 목록 조회 [ 페이징,검색 ]
-        @GetMapping("/boardlist")
-        public List<BoardDto> boardlist(
-                @RequestParam("bcno") int bcno ,    // 카테고리 번호
-                @RequestParam("page") int page,     // 현재페이지번호
-                @RequestParam("key") String key,    // 검색 필드
-                @RequestParam("keyword") String keyword  // 검색 필드내 검색할 데이터
-        ){
-            return boardservice.boardlist( page , bcno , key ,keyword );
+        @PostMapping("/boardlist")
+        public PageDto boardlist(@RequestBody PageDto pageDto) {
+            return boardservice.boardlist(pageDto);
         }
         // 3. 게시물 개별 조회
         @GetMapping("/getboard")

@@ -11,7 +11,7 @@ public class BoardDto {
     // 1. 필드
     private int bno;             // 게시물번호
     private String btitle;       // 게시물제목
-    private String bcontent;  // 게시물 내용
+    private String bcontent;    // 게시물 내용
     private int bview;          // 조회수
     private MultipartFile bfile;        // 첨부파일
             // Spring : MultipartFile
@@ -20,8 +20,8 @@ public class BoardDto {
     private int bcno;             // 카테고리 [ 카테고리-fk ]
     private String memail;         // 회원아이디
 
-    private int startbtn;
-    private int endbtn;
+    private String bdate;  // 작성일 [ LocalDateTime -> String 출력용 ]
+
 
 
     public BoardEntity toEntity(){
