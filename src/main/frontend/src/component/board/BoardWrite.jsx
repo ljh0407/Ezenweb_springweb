@@ -51,7 +51,14 @@ export default function  BoardWrite( props ) {
         let formdata = new FormData(boardform);
         formdata.set("bcno" , bcno);    // 폼데이터의 카테고리 번호 추가
         formdata.set("bcontent" , bcontent); // 폼데이터에 내용 추가
-
+     axios
+                .post("/board/setboard" , formdata , { headers: { 'Content-Type': 'multipart/form-data'  } }  )
+                .then( res => {
+                        console.log( res.data )
+                        if( res.data == true ){ alert('게시물 작성 성공'); }
+                        else{ alert('게시물 작성 실패'); }
+                    })
+                .catch( err => { console.log( err ); } )
     }
 
     return(
@@ -81,16 +88,11 @@ export default function  BoardWrite( props ) {
                     <CKEditor
                             editor={ ClassicEditor }
                             data="<p>Hello from CKEditor 5!</p>"
-                            onReady={ editor => {
-                                // You can store the "editor" and use when it is needed.
-                                console.log( 'Editor is ready to use!', editor );
-                            } }
                             onChange={ ( event, editor ) => {
                                 const data = editor.getData(); bcontent = data
                             } }
 
                     />
-
                         첨부파일 : <input type="file" name="bfile" />
                         <button type="button" onClick={setboard}>글등록</button>
                     </form>

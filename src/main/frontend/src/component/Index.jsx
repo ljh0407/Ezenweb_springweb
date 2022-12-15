@@ -20,6 +20,8 @@ import Login from './member/Login';
 import BoardList from './board/BoardList';
 import BoardWrite from './board/BoardWrite';
 import BoardView from './board/BoardView';
+import BoardUpdate from './board/BoardUpdate';
+import Chatting from './chatting/Chatting';
 
 import Library from '../Book/chapter3/Library';
 import Clock from '../Book/chapter4/Clock';
@@ -34,6 +36,7 @@ import LandingPage from '../Book/chapter9/LandingPage';
 import AttendanceBook from '../Book/chapter10/AttendanceBook';
 import SignUp from '../Book/chapter11/SignUp';
 import BookList from '../Book/BookList';
+
 
 
 // 라우터 설치[ 터미널 ] : npm i react-router-dom  i = install 약자
@@ -59,6 +62,8 @@ export default function Index( props ){
                         <Route path="/board/list" element={ <BoardList/>} />
                         <Route path="/board/write" element={ <BoardWrite/>} />
                         <Route path="/board/view/:bno" element={ <BoardView/>} />
+                        <Route path="/board/update/:bno" element={ <BoardUpdate/>} />
+                        <Route path="/chatting" element={ <Chatting/>} />
 
                         <Route path="/book/list" element={ <BookList/>} />
 

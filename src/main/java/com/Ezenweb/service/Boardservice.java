@@ -52,7 +52,7 @@ public class Boardservice {
 
 
     // 첨부파일 경로
-    String path = "C:\\";
+    String path = "C:\\upload\\";
         /*
                 1. insert : boardRepository.save(엔티티)  BoardEntity entity
                 2. select : boardRepository.findAll()           List<BoardEntity> elist
@@ -95,24 +95,24 @@ public class Boardservice {
          }catch (Exception e){System.out.println(e);}
     }
 
-    // ** 첨부파일 업로드
-    @Transactional    //  boardDto : 쓰기,수정 대상     BoardEntity:원본
-    public boolean fileupload( BoardDto boardDto  , BoardEntity boardEntity) {
-        if (boardDto.getBfile() != null) {  // ** 첨부파일 있을때
-            // * 업로드된 파일의 이름 [ 문제점 : 파일명 중복 ]
-            String uuid = UUID.randomUUID().toString();  // 1. 난수생성
+    // * 첨부파일 업로드 [ 1. 쓰기메소드 2. 수정메소드 ] 사용
+    @Transactional              //  boardDto : 쓰기,수정 대상     BoardEntity:원본
+    public boolean fileupload( BoardDto boardDto , BoardEntity boardEntity ){
+        if( !boardDto.getBfile().getOriginalFilename().equals("") ) { // ** 첨부파일 있을때
+            // * 업로드 된 파일의 이름 [ 문제점 : 파일명 중복 ]
+            String uuid = UUID.randomUUID().toString(); // 1. 난수생성
             String filename = uuid + "_" + boardDto.getBfile().getOriginalFilename(); // 2. 난수+파일명
-            // * 첨부파일명 db에 등록
-            boardEntity.setBfile(filename); // 해당 파일명 엔티티에 저장 // 3. 난수 + 파일명으 엔티티에 저장
-            // * 첨부파일업로드 // 3. 저장할 경로 [ 전역변수 ]
+            // * 첨부파일명 db 에 등록
+            boardEntity.setBfile(filename); // 해당 파일명 엔티티에 저장 // 3. 난수+파일명 엔티티 에 저장
+            // * 첨부파일 업로드 // 3. 저장할 경로 [ 전역변수 ]
             try {
-                File upliardfile = new File(path + filename);   // 4. 경로 + 파일명 [ 객체화 ]
-                boardDto.getBfile().transferTo(upliardfile);  // 5. 해당객체 경로로 업로드
+                File uploadfile = new File(path + filename);  // 4. 경로+파일명 [ 객체화 ]
+                boardDto.getBfile().transferTo(uploadfile);   // 5. 해당 객체 경로 로 업로드
             } catch (Exception e) {
                 System.out.println("첨부파일 업로드 실패 ");
             }
-            return true;
-        }else {return false;}
+            return  true;
+        }else{ return  false;}
     }
     // 1. 게시물 쓰기
     @Transactional
@@ -235,7 +235,7 @@ public class Boardservice {
         if(optional.isPresent() ) {
             BoardEntity boardEntity = optional.get();
             // 1. 수정할 첨부파일이 있을때  ---> 새로운 첨부파일 업로드 , db 수정한다.
-            if (boardDto.getBfile() != null) { // boardDto : 수정할 정보 boardEntity : 원본
+            if (!boardDto.getBfile().getOriginalFilename().equals("") ) { // boardDto : 수정할 정보 boardEntity : 원본
                 if (boardEntity.getBfile() != null) { // 기존 첨부파일 있을때
                     File file = new File(path + boardEntity.getBfile());    // 기존 첨부파일 객체화
                     if (file.exists()) {
