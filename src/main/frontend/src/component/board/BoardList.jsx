@@ -7,6 +7,9 @@ export default function BoardList(){
     const [ pageDto , setPageDto ] = useState( { list : [] } )                                // 1. 게시물 리스트 state
     const [ bcategory , setBcategoryList ] = useState( [ ] )                                      // 1. 카테고리 리스트
                                                     // [ ] : array/list     {  } : object/dto
+
+    let mno = useRef(0);
+
     // ------------------------------  1. 게시물  -------------------------------------- //
     function getboardlist( ){ // 2. server : pageInfo 요청 => pageDto 응답 [ 실행조건 : 1. 렌더링될때 2.검색할때 3.카테고리선택 4.페이징 선택  ---> 일반 함수화 ]
         axios   .post( "/board/boardlist" ,  pageInfo )
@@ -85,11 +88,12 @@ export default function BoardList(){
             </table>
 
             <Pagination
-                activePage={ pageInfo.page  }
-                itemsCountPerPage = { 3 }
-                totalItemsCount = { pageDto.totalBoards }
-                pageRangeDisplayed = { 5 }
-                onChange={ onPage }
+                activePage={ pageInfo.page  }   {/*현재 페이지 번호*/}
+                itemsCountPerPage = { 3 }{/*페이지당 보여줄 게시물수*/}
+                totalItemsCount = { pageDto.totalBoards }{/*전체게시물수*/}
+                pageRangeDisplayed = { 5 }{/*버튼 단수*/}
+                onChange={ onPage }{/*버튼 클릭이벤트*/}
+                {/*전체 게시물 수 와 버튼 수전달*/}
             />
 
             <div className="searchBox">

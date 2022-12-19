@@ -52,7 +52,7 @@ return (
                     </ul>
                 </div>
             </div>
-            );
+    )
 }
 
    // get("url")

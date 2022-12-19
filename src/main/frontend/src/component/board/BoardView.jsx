@@ -1,4 +1,4 @@
-import React , {useState , useEffect } from 'react';
+import React , { useState , useEffect } from 'react';
 import { useParams } from "react-router-dom";  // 라우터 경로상의 매개변수 호출 훅 [ 쿼리스트링 형식 ]
 import axios from 'axios';
 
